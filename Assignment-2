@@ -1,0 +1,4 @@
+Qusetion: In one docker container war is running , instead of RDS use docker container
+
+1.Wget tomcat and wget Jenkins war in webapps start the Tomcat
+
