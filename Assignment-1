@@ -1,5 +1,7 @@
-# Wget tomcat and wget Jenkins war in webapps start the Tomcat
-#Create This shell script for Doing the connection changes
+Question: Write jenkins CI/CD pipeline in which you can create a war file and deploy this war into docker tomcat container
+
+1.Wget tomcat and wget Jenkins war in webapps start the Tomcat
+2.Create This shell script for Doing the connection changes
 
 #!/bin/bash
 db_endpoint="jdbc:mysql://assignment-1.ctoea2qc6pfb.ap-south-1.rds.amazonaws.com:3306/test"
@@ -12,9 +14,23 @@ sed -i "s#jdbc:mysql://localhost:3306/test#${db_endpoint}#g" "$jsp_path"
 sed -i "s#\"root\", \"root\"#\"${db_user}\", \"${db_passwd}\"#g" "$jsp_path"
 jar cf /root/build/target/LoginWebApp.war -C /root/build/target/ .
 
+3.Create RDS db.instance 
+4.Login into it 
+ mysql -h assignment-1.ctoea2qc6pfb.ap-south-1.rds.amazonaws.com -u admin -p
+5.Create database "test"
+6.use test
+CREATE TABLE USER (
+  id int(10) unsigned NOT NULL auto_increment,
+  first_name varchar(45) NOT NULL,
+  last_name varchar(45) NOT NULL,
+  email varchar(45) NOT NULL,
+  username varchar(45) NOT NULL,
+  password varchar(45) NOT NULL,
+  regdate date NOT NULL,
+  PRIMARY KEY  (id)
+) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 
-
-
+7. Create Pipeline for this all
 
 pipeline{
     agent any
