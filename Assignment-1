@@ -1,0 +1,38 @@
+pipeline{
+    agent any
+    stages{
+        stage("Install req."){
+            steps{
+                sh "yum install git maven mysql docker -y"
+            }
+        }
+        stage ("Git clone"){
+            steps{
+                dir ("/root/build") {
+                git 'https://github.com/Shantanumajan6/project.git'
+            }
+             }
+        }
+        stage ("Build"){
+            steps{
+                dir ("/root/build/") {
+                    sh "mvn clean install"
+                }
+            }
+        }
+        stage ("Run shell script") {
+            steps {
+                dir ("/root"){
+                    sh "chmod -R 777 assign1.sh"
+                    sh "./assign1.sh"
+                }
+            }
+        }
+        stage ("Docker run") {
+            steps {
+                sh "service docker start"
+                sh "docker run -itd --name cont-1 -p 80:8080 -v /root/build/target/:/usr/local/tomcat/webapps/ tomcat:9"
+            }
+        }
+    }
+}
