@@ -1,0 +1,52 @@
+Qusetion: In one docker container war is running , instead of RDS use docker container
+
+    1  yum install java-11-amazon-corretto.x86_64 maven git -y
+    2  git clone https://github.com/Shantanumajan6/project.git
+    3  cd project/
+    4  mvn clean install
+    5  ls
+    6  cd
+    7  docker network create assign2
+    8  yum install docker -y
+    9  docker network create assign2
+   10  service docker start
+   11  docker network create assign2
+   12  docker network ls
+   13  docker run -itd --name cont-1 --network assign2 -p 8080:8080 -v /root/project/target/:/usr/local/tomcat/webapps/ tomcat:9 
+   14  docker ps -a
+   15  brctl show
+   16  docker network ls
+   17  docker network inspect assign2
+   18  docker run --name mysql1 -e MYSQL_ROOT_PASSWORD=admin12345 -d mysql:tag
+   19  docker run --name mysql1 -e MYSQL_ROOT_PASSWORD=root -d mysql:tag
+   20  docker run --name mysql1 -e MYSQL_ROOT_PASSWORD=root -d mysql:latest
+   21  docker ps -a
+   22  docker network inspect assign2
+   23  docker kill mysql
+   24  docker ps -a
+   25  docker kill mysql1
+   26  docker rm mysql1
+   27  docker run --name mysql1 --network assign2 -e MYSQL_ROOT_PASSWORD=root -d mysql:latest
+   28  docker ps -a
+   29  docker exec -it mysql1 bash
+   30  docker exec -it mysql1 -u root  -p
+   31  docker exec -it mysql1 mysql -u root  -p
+   32  ls
+   33  docker network inspect assign2
+   34  cd project/
+   35  cd target/
+   36  ls
+   37  cd L
+   38  cd LoginWebApp/
+   39  vi userRegistration.jsp 
+   40  ping 172.18.0.3/16
+   41  ping 172.18.0.3
+   42  vi userRegistration.jsp 
+   43  cd
+   44  docker stop cont-1 mysql1
+   45  $ docker run --name mysql1 -e MYSQL_ROOT_PASSWORD=admin12345 -d mysql:tag
+   46  docker run --name mysql1 --network assign2 -e MYSQL_ROOT_PASSWORD=root -d mysql:latest
+   47  docker start cont-1 mysql1
+   48  docker ps
+   49  docker exec -it mysql1 mysql -u root  -p
+   50  history
