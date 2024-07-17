@@ -1,4 +1,83 @@
 Qusetion: In one docker container war is running , instead of RDS use docker container
 
 1.Wget tomcat and wget Jenkins war in webapps start the Tomcat
+2.Create Pipeline 
+
+pipeline {
+    agent any 
+    stages{
+        stage("Install requirements"){
+            steps{
+                sh "yum install maven git docker -y"
+            }
+        }
+        stage ("Git clone"){
+            steps{
+                dir ("/root/build") {
+                git 'https://github.com/Shantanumajan6/project.git'
+            }
+             }
+        }
+        stage ("Build"){
+            steps{
+                dir ("/root/build/") {
+                    sh "mvn clean install"
+                }
+            }
+        }
+        stage ("Docker network create"){
+            steps {
+                sh "service docker start"
+                sh "docker network create assign2"
+            }
+        }
+        stage("Tomcat container"){
+            steps {
+                sh "docker run -itd --name tomcat -p 80:8080 --network assign2 -v /root/build/target/:/usr/local/tomcat/webapps/ tomcat:9"
+            }
+        }
+        stage("Run shell script"){
+            dir ("/root"){
+            sh "chmod -R 777 assign2.sh"
+            sh "./assign2.sh"
+            } 
+        }
+        stage("Mysql container"){
+            steps {
+                sh "docker run --name mysql --network assign2 -e MYSQL_ROOT_PASSWORD=root -d mysql:latest "
+            }
+        }
+    }
+}
+
+3. Shell script where i have written connection con instead of RDS using mysql container
+
+#!/bin/bash
+db_endpoint="jdbc:mysql://:3306/test"
+db_user="root"
+db_passwd="root"
+jsp_path="/root/build/target/LoginWebApp/userRegistration.jsp"
+jar -xvf /root/build/target/LoginWebApp.war
+rm -f /root/build/target/LoginWebApp.war
+sed -i "s#jdbc:mysql://localhost:3306/test#${db_endpoint}#g" "$jsp_path"
+sed -i "s#\"root\", \"root\"#\"${db_user}\", \"${db_passwd}\"#g" "$jsp_path"
+jar cf /root/build/target/LoginWebApp.war -C /root/build/target/ .
+
+4. Login Into Mysql container
+docker exec -it mysql mysql -u root -p
+
+Create database "test"
+use test
+CREATE TABLE USER (
+  id int(10) unsigned NOT NULL auto_increment,
+  first_name varchar(45) NOT NULL,
+  last_name varchar(45) NOT NULL,
+  email varchar(45) NOT NULL,
+  username varchar(45) NOT NULL,
+  password varchar(45) NOT NULL,
+  regdate date NOT NULL,
+  PRIMARY KEY  (id)
+) ENGINE=InnoDB DEFAULT CHARSET=latin1;
+
+5. Done Now access using public IP port 80 because 8080 i am using for tomcat where my jenkins war has been deployed
 
